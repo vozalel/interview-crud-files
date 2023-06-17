@@ -5,10 +5,10 @@ import (
 	"github.com/vozalel/interview-crud-files/pkg/custom_error"
 )
 
-type DatasourceName string
+//type DatasourceName string
 
 type Datasource struct {
-	Name DatasourceName
+	Name string
 	Data *string
 }
 
@@ -33,7 +33,7 @@ type DatasourceACL struct {
 
 type UserACL struct {
 	PerformACL
-	Sources map[DatasourceName]DatasourceACL
+	Sources map[string]DatasourceACL
 }
 
 type IManagerDatasource interface {
@@ -42,7 +42,7 @@ type IManagerDatasource interface {
 	UpdateDataSource(ctx context.Context, datasource *Datasource) *custom_error.CustomError
 	DeleteDataSource(ctx context.Context, datasource *Datasource) *custom_error.CustomError
 
-	ListDataSources(ctx context.Context) ([]DatasourceName, *custom_error.CustomError)
+	ListDataSources(ctx context.Context) ([]string, *custom_error.CustomError)
 }
 
 type IDatasourceUC interface {
@@ -51,7 +51,7 @@ type IDatasourceUC interface {
 	UpdateDataSource(ctx context.Context, user *User, datasource *Datasource) *custom_error.CustomError
 	DeleteDataSource(ctx context.Context, user *User, datasource *Datasource) *custom_error.CustomError
 
-	ListDataSources(ctx context.Context, user *User) ([]DatasourceName, *custom_error.CustomError)
+	ListDataSources(ctx context.Context, user *User) ([]string, *custom_error.CustomError)
 }
 
 type IManagerACL interface {

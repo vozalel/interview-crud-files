@@ -12,29 +12,6 @@ import (
 var code = 1 // if m.Run not started exit code set 1
 var managerACL datasources.IManagerACL
 
-/*func TestMain(m *testing.M) {
-	defer os.Exit(code)
-
-	var (
-		pg  *postgres.Postgres
-		err error
-	)
-
-	logger.Init("test managerACL adapter", "local", "debug")
-
-	pg, err = postgres.New(
-		"postgres://user:pass@localhost:5432/postgres?pool_max_conn_idle_time=30s",
-		logger.Instance,
-	)
-	if err != nil {
-		logger.Instance.Fatal(fmt.Errorf("postgres.New error: %v", err))
-	}
-	defer pg.Close()
-	managerACL = New(pg)
-
-	code = m.Run()
-}*/
-
 func getManagerACL() datasources.IManagerACL {
 	if managerACL == nil {
 		logger.Init("test managerACL adapter", "local", "debug")
