@@ -1,6 +1,7 @@
 package datasource
 
 import (
+	"context"
 	"github.com/vozalel/interview-crud-files/internal/entity/datasources"
 	"github.com/vozalel/interview-crud-files/pkg/custom_error"
 )
@@ -13,27 +14,27 @@ type FileManager struct {
 	Path string
 }
 
-func (f *FileManager) CreateDataSource(datasource *datasources.Datasource, ctx interface{}) *custom_error.CustomError {
+func (f FileManager) CreateDataSource(ctx context.Context, datasource *datasources.Datasource) *custom_error.CustomError {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (f *FileManager) ReadDataSource(datasource *datasources.Datasource) *custom_error.CustomError {
+func (f FileManager) ReadDataSource(ctx context.Context, datasource *datasources.Datasource) *custom_error.CustomError {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (f *FileManager) UpdateDataSource(datasource *datasources.Datasource) *custom_error.CustomError {
+func (f FileManager) UpdateDataSource(ctx context.Context, datasource *datasources.Datasource) *custom_error.CustomError {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (f *FileManager) DeleteDataSource(datasource *datasources.Datasource) *custom_error.CustomError {
+func (f FileManager) DeleteDataSource(ctx context.Context, datasource *datasources.Datasource) *custom_error.CustomError {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (f *FileManager) ListDataSources() ([]datasources.DatasourceName, *custom_error.CustomError) {
+func (f FileManager) ListDataSources(ctx context.Context) ([]datasources.DatasourceName, *custom_error.CustomError) {
 	//TODO implement me
 	panic("implement me")
 }

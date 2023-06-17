@@ -67,8 +67,7 @@ func TestGrantUserSourceACL(t *testing.T) {
 		Data: &datasourceData,
 	}
 
-	acl := datasources.UserDatasourceACL{
-		Create: true,
+	acl := datasources.DatasourceACL{
 		Read:   true,
 		Update: true,
 		Delete: true,

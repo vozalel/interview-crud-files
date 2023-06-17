@@ -11,9 +11,9 @@ CREATE TABLE acl.user_datasource (
                                      CONSTRAINT acl_un UNIQUE (user_id, datasource_name)
 );
 
-
 CREATE TABLE acl.user_perform (
                                   user_id int4 NOT NULL,
                                   "create" bool NOT NULL,
+                                  list bool NOT NULL,
                                   CONSTRAINT user_perform_un UNIQUE (user_id)
 );

@@ -27,13 +27,17 @@ type Acl struct {
 	*postgres.Postgres
 }
 
-func (a *Acl) GetUserPerformACL(ctx context.Context, user *datasources.User) (datasources.PerformACL, *custom_error.CustomError) {
+func (a *Acl) GetUserPerformACL(
+	ctx context.Context,
+	user *datasources.User) (datasources.PerformACL, *custom_error.CustomError) {
+
 	acl := datasources.PerformACL{}
-	sql := `SELECT "create" FROM ` + tableACLUserPerform + `WHERE user_id = $1`
+	sql := `SELECT "create", list FROM ` + tableACLUserPerform + `WHERE user_id = $1`
 	args := []interface{}{user.ID}
 	err := a.Pool.QueryRow(
 		ctx, sql, args...).Scan(
 		&acl.Create,
+		&acl.List,
 	)
 
 	if err == nil {
@@ -59,15 +63,19 @@ func (a *Acl) GetUserPerformACL(ctx context.Context, user *datasources.User) (da
 func (a *Acl) GrantUserPerformACL(
 	ctx context.Context, user *datasources.User,
 	acl datasources.PerformACL) *custom_error.CustomError {
-	sql := `INSERT INTO` + tableACLUserPerform + `(user_id, "create")
-	VALUES ($1, 	 $2)
+
+	sql := `INSERT INTO` + tableACLUserPerform +
+		`(user_id, "create", list)
+	VALUES				  
+		 ($1, 	   $2, 	     $3)
 	ON CONFLICT (user_id, datasource_name) 
-	    DO UPDATE SET "create" = $2
+	    DO UPDATE SET "create" = $2, list = $3
 	`
 
 	args := []interface{}{
 		user.ID,
 		acl.Create,
+		acl.List,
 	}
 
 	tag, err := a.Pool.Exec(ctx, sql, args...)
@@ -91,7 +99,9 @@ func (a *Acl) GrantUserPerformACL(
 	return nil
 }
 
-func (a *Acl) RevokeUserPerformACL(ctx context.Context, user *datasources.User) *custom_error.CustomError {
+func (a *Acl) RevokeUserPerformACL(
+	ctx context.Context, user *datasources.User) *custom_error.CustomError {
+
 	sql := `DELETE FROM ` + tableACLUserPerform + `WHERE user_id = $1`
 	args := []interface{}{user.ID}
 	tag, err := a.Pool.Exec(ctx, sql, args...)
@@ -120,7 +130,7 @@ func (a *Acl) GetUserSourceACL(
 	datasource *datasources.Datasource) (datasources.DatasourceACL, *custom_error.CustomError) {
 
 	acl := datasources.DatasourceACL{}
-	sql := `SELECT read, update, delete, "grant", revoke FROM` + tableACLUserDatasource + `WHERE user_id = $1 AND datasource_name = $2`
+	sql := `SELECT read, update, delete, "grant", revoke FROM ` + tableACLUserDatasource + ` WHERE user_id = $1 AND datasource_name = $2`
 	args := []interface{}{user.ID, datasource.Name}
 	err := a.Pool.QueryRow(
 		ctx, sql, args...).Scan(
@@ -157,11 +167,11 @@ func (a *Acl) GrantUserSourceACL(
 	datasource *datasources.Datasource,
 	acl datasources.DatasourceACL) *custom_error.CustomError {
 
-	sql := `INSERT INTO 
-	acl.acl(user_id, datasource_name, read, update, delete, "grant", revoke)
+	sql := `INSERT INTO ` + tableACLUserDatasource +
+		`(user_id, datasource_name, read, update, delete, "grant", revoke)
 	VALUES ($1, 	 $2, 			  $3,   $4,     $5,     $6, 	 $7)
 	ON CONFLICT (user_id, datasource_name) 
-	    DO UPDATE SET read = $4, update = $5, delete = $6, "grant" = $7, revoke = $8
+	    DO UPDATE SET read = $3, update = $4, delete = $5, "grant" = $6, revoke = $7
 	`
 
 	args := []interface{}{
@@ -198,7 +208,8 @@ func (a *Acl) GrantUserSourceACL(
 func (a *Acl) RevokeUserSourceACL(
 	ctx context.Context, user *datasources.User,
 	datasource *datasources.Datasource) *custom_error.CustomError {
-	sql := `DELETE FROM acl.acl WHERE user_id = $1 AND datasource_name = $2`
+
+	sql := `DELETE FROM ` + tableACLUserDatasource + ` WHERE user_id = $1 AND datasource_name = $2`
 	args := []interface{}{user.ID, datasource.Name}
 
 	tag, err := a.Pool.Exec(ctx, sql, args...)

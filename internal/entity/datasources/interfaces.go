@@ -19,6 +19,7 @@ type User struct {
 
 type PerformACL struct {
 	Create bool
+	List   bool
 }
 
 type DatasourceACL struct {
@@ -44,6 +45,15 @@ type IManagerDatasource interface {
 	ListDataSources(ctx context.Context) ([]DatasourceName, *custom_error.CustomError)
 }
 
+type IDatasourceUC interface {
+	CreateDataSource(ctx context.Context, user *User, datasource *Datasource) *custom_error.CustomError
+	ReadDataSource(ctx context.Context, user *User, datasource *Datasource) *custom_error.CustomError
+	UpdateDataSource(ctx context.Context, user *User, datasource *Datasource) *custom_error.CustomError
+	DeleteDataSource(ctx context.Context, user *User, datasource *Datasource) *custom_error.CustomError
+
+	ListDataSources(ctx context.Context, user *User) ([]DatasourceName, *custom_error.CustomError)
+}
+
 type IManagerACL interface {
 	// GetUserPerformACL - return CustomError.Code = 403 if user not have access to perform any action
 	GetUserPerformACL(ctx context.Context, user *User) (PerformACL, *custom_error.CustomError)
@@ -63,3 +73,13 @@ type IManagerACL interface {
 	// RevokeUserSourceACL - delete ACL record
 	RevokeUserSourceACL(ctx context.Context, user *User, datasource *Datasource) *custom_error.CustomError
 }
+
+var (
+	MaxSourcePermission = DatasourceACL{
+		Read:   true,
+		Update: true,
+		Delete: true,
+		Grant:  true,
+		Revoke: true,
+	}
+)
