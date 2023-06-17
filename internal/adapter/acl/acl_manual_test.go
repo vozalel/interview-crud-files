@@ -84,9 +84,46 @@ func TestGrantUserSourceACL(t *testing.T) {
 }
 
 func TestGetUserSourceACL(t *testing.T) {
+	manager := getManagerACL()
 
+	userID := 1
+	datasourceData := "xml"
+
+	user := datasources.User{
+		Name: "admin",
+		ID:   &userID,
+	}
+
+	datasource := datasources.Datasource{
+		Name: "test source",
+		Data: &datasourceData,
+	}
+
+	acl, errCustom := manager.GetUserSourceACL(context.Background(), &user, &datasource)
+	if errCustom != nil {
+		t.Error("managerACL.GetUserSourceACL() error:", errCustom)
+	}
+	t.Log("acl:", acl)
 }
 
 func TestRevokeUserSourceACL(t *testing.T) {
-	t.Log("test two", 2)
+	manager := getManagerACL()
+
+	userID := 1
+	datasourceData := "xml"
+
+	user := datasources.User{
+		Name: "admin",
+		ID:   &userID,
+	}
+
+	datasource := datasources.Datasource{
+		Name: "test source",
+		Data: &datasourceData,
+	}
+
+	errCustom := manager.RevokeUserSourceACL(context.Background(), &user, &datasource)
+	if errCustom != nil {
+		t.Error("managerACL.RevokeUserSourceACL() error:", errCustom)
+	}
 }

@@ -17,14 +17,22 @@ type User struct {
 	ID   *int
 }
 
-type UserDatasourceACL struct {
+type PerformACL struct {
 	Create bool
+}
+
+type DatasourceACL struct {
 	Read   bool
 	Update bool
 	Delete bool
 
 	Grant  bool
 	Revoke bool
+}
+
+type UserACL struct {
+	PerformACL
+	Sources map[DatasourceName]DatasourceACL
 }
 
 type IManagerDatasource interface {
@@ -37,9 +45,21 @@ type IManagerDatasource interface {
 }
 
 type IManagerACL interface {
-	// GetUserSourceACL - return CustomError.Code = 403 if user not have access to datasource
-	GetUserSourceACL(ctx context.Context, user *User, datasource *Datasource) (UserDatasourceACL, *custom_error.CustomError)
+	// GetUserPerformACL - return CustomError.Code = 403 if user not have access to perform any action
+	GetUserPerformACL(ctx context.Context, user *User) (PerformACL, *custom_error.CustomError)
 
-	GrantUserSourceACL(ctx context.Context, user *User, datasource *Datasource, acl UserDatasourceACL) *custom_error.CustomError
+	// GrantUserPerformACL - create new ACL record if not exist or update if exist
+	GrantUserPerformACL(ctx context.Context, user *User, acl PerformACL) *custom_error.CustomError
+
+	// RevokeUserPerformACL - delete ACL record
+	RevokeUserPerformACL(ctx context.Context, user *User) *custom_error.CustomError
+
+	// GetUserSourceACL - return CustomError.Code = 403 if user not have access to datasource
+	GetUserSourceACL(ctx context.Context, user *User, datasource *Datasource) (DatasourceACL, *custom_error.CustomError)
+
+	// GrantUserSourceACL - create new ACL record if not exist or update if exist
+	GrantUserSourceACL(ctx context.Context, user *User, datasource *Datasource, acl DatasourceACL) *custom_error.CustomError
+
+	// RevokeUserSourceACL - delete ACL record
 	RevokeUserSourceACL(ctx context.Context, user *User, datasource *Datasource) *custom_error.CustomError
 }
