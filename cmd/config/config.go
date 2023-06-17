@@ -9,6 +9,7 @@ type (
 		App         App
 		Logger      Logger
 		FeatureFlag FeatureFlag
+		Datasource  Datasource
 		Debug       bool `env:"DEBUG" env-default:"false"`
 	}
 
@@ -19,6 +20,10 @@ type (
 
 	Logger struct {
 		Level string `env:"LOGGING_LEVEL" env-default:"debug"`
+	}
+
+	Datasource struct {
+		Path string `env:"DATASOURCE_PATH" env-default:"/datasource"`
 	}
 
 	FeatureFlag struct {

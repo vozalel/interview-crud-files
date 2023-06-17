@@ -8,6 +8,9 @@ github.com/davecgh/go-spew/spew
 # github.com/gofrs/uuid v4.4.0+incompatible
 ## explicit
 github.com/gofrs/uuid
+# github.com/google/uuid v1.3.0
+## explicit
+github.com/google/uuid
 # github.com/ilyakaznacheev/cleanenv v1.4.2
 ## explicit; go 1.13
 github.com/ilyakaznacheev/cleanenv
