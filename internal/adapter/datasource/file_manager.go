@@ -13,7 +13,7 @@ type FileManager struct {
 	Path string
 }
 
-func (f *FileManager) CreateDataSource(datasource *datasources.Datasource) *custom_error.CustomError {
+func (f *FileManager) CreateDataSource(datasource *datasources.Datasource, ctx interface{}) *custom_error.CustomError {
 	//TODO implement me
 	panic("implement me")
 }
