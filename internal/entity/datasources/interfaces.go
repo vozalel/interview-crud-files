@@ -1,9 +1,13 @@
 package datasources
 
-import "github.com/vozalel/interview-crud-files/internal/entity/custom_error"
+import (
+	"github.com/vozalel/interview-crud-files/pkg/custom_error"
+)
+
+type DatasourceName string
 
 type Datasource struct {
-	Name   string
+	Name   DatasourceName
 	Source *string
 }
 
@@ -27,6 +31,8 @@ type IManagerDatasource interface {
 	ReadDataSource(datasource *Datasource) *custom_error.CustomError
 	UpdateDataSource(datasource *Datasource) *custom_error.CustomError
 	DeleteDataSource(datasource *Datasource) *custom_error.CustomError
+
+	ListDataSources() ([]DatasourceName, *custom_error.CustomError)
 }
 
 type IManagerACL interface {
