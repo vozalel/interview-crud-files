@@ -51,7 +51,7 @@ func (u *Usecase) CreateDataSource(
 		return custom_error.New(
 			fmt.Errorf("usecase - Usecase - CreateDataSource - !u.managerDatasource.ExistDataSource()"),
 			http.StatusConflict,
-			"file already exist",
+			"File already exist",
 		)
 	}
 	if errCustom != nil {
@@ -128,7 +128,7 @@ func (u *Usecase) UpdateDataSource(
 		return custom_error.New(
 			fmt.Errorf("usecase - Usecase - UpdateDataSource - !u.managerDatasource.ExistDataSource()"),
 			http.StatusNotFound,
-			"file not exist",
+			"File not exist",
 		)
 	}
 	if errCustom != nil {

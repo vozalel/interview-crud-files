@@ -36,6 +36,7 @@ func newDatasourceRoutes(handler *gin.RouterGroup, datasourceUC entity.IDatasour
 // @Success     200 {string} string
 // @Failure     400 {object} properErrorResponse "Incorrect request"
 // @Failure     403 {object} properErrorResponse "Permission deny"
+// @Failure     409 {object} properErrorResponse "File already exist"
 // @Failure		500 {object} properErrorResponse "Internal error"
 // @Router      /source [post]
 func (datasourceRoutes *datasourceRoutes) createDatasource(ctx *gin.Context) {
@@ -161,7 +162,7 @@ func (datasourceRoutes *datasourceRoutes) readDatasource(ctx *gin.Context) {
 // @Success     200 {string} string "ok"
 // @Failure     400 {object} properErrorResponse "Incorrect request"
 // @Failure     403 {object} properErrorResponse "Permission deny"
-// @Failure     404 {object} properErrorResponse "Not found"
+// @Failure     404 {object} properErrorResponse "File not exist"
 // @Failure		500 {object} properErrorResponse "Internal error"
 // @Router      /source [patch]
 func (datasourceRoutes *datasourceRoutes) updateDatasource(ctx *gin.Context) {
