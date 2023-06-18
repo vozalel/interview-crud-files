@@ -18,11 +18,10 @@ func getManagerFile() entity.IManagerDatasource {
 
 func TestFileManager_CreateDataSource(t *testing.T) {
 	manager := getManagerFile()
-	data := "test_data"
 
 	datasource := entity.Datasource{
-		"test_name.csv",
-		&data,
+		Name: "test_name.csv",
+		Data: []byte("test_data"),
 	}
 
 	errCustom := manager.CreateDataSource(context.Background(), &datasource)
@@ -46,11 +45,10 @@ func TestFileManager_ReadDataSource(t *testing.T) {
 
 func TestFileManager_UpdateDataSource(t *testing.T) {
 	manager := getManagerFile()
-	data := "test_data_update"
 
 	datasource := entity.Datasource{
-		"test_name.csv",
-		&data,
+		Name: "test_name.csv",
+		Data: []byte("test_data"),
 	}
 
 	errCustom := manager.UpdateDataSource(context.Background(), &datasource)

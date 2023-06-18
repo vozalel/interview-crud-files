@@ -9,7 +9,6 @@ import (
 	"testing"
 )
 
-var code = 1 // if m.Run not started exit code set 1
 var managerACL entity.IManagerACL
 
 func getManagerACL() entity.IManagerACL {
