@@ -3,16 +3,16 @@ package acl
 import (
 	"context"
 	"fmt"
-	"github.com/vozalel/interview-crud-files/internal/entity/datasources"
+	"github.com/vozalel/interview-crud-files/internal/entity"
 	"github.com/vozalel/interview-crud-files/pkg/logger"
 	"github.com/vozalel/interview-crud-files/pkg/postgres"
 	"testing"
 )
 
 var code = 1 // if m.Run not started exit code set 1
-var managerACL datasources.IManagerACL
+var managerACL entity.IManagerACL
 
-func getManagerACL() datasources.IManagerACL {
+func getManagerACL() entity.IManagerACL {
 	if managerACL == nil {
 		logger.Init("test managerACL adapter", "local", "debug")
 
@@ -34,17 +34,17 @@ func TestGrantUserSourceACL(t *testing.T) {
 	userID := 1
 	datasourceData := "xml"
 
-	user := datasources.User{
+	user := entity.User{
 		Name: "admin",
 		ID:   &userID,
 	}
 
-	datasource := datasources.Datasource{
+	datasource := entity.Datasource{
 		Name: "test source",
 		Data: &datasourceData,
 	}
 
-	acl := datasources.DatasourceACL{
+	acl := entity.DatasourceACL{
 		Read:   true,
 		Update: true,
 		Delete: true,
@@ -65,12 +65,12 @@ func TestGetUserSourceACL(t *testing.T) {
 	userID := 1
 	datasourceData := "xml"
 
-	user := datasources.User{
+	user := entity.User{
 		Name: "admin",
 		ID:   &userID,
 	}
 
-	datasource := datasources.Datasource{
+	datasource := entity.Datasource{
 		Name: "test source",
 		Data: &datasourceData,
 	}
@@ -88,12 +88,12 @@ func TestRevokeUserSourceACL(t *testing.T) {
 	userID := 1
 	datasourceData := "xml"
 
-	user := datasources.User{
+	user := entity.User{
 		Name: "admin",
 		ID:   &userID,
 	}
 
-	datasource := datasources.Datasource{
+	datasource := entity.Datasource{
 		Name: "test source",
 		Data: &datasourceData,
 	}

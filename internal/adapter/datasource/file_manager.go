@@ -3,7 +3,7 @@ package datasource
 import (
 	"context"
 	"fmt"
-	"github.com/vozalel/interview-crud-files/internal/entity/datasources"
+	"github.com/vozalel/interview-crud-files/internal/entity"
 	"github.com/vozalel/interview-crud-files/pkg/custom_error"
 	"io/fs"
 	"net/http"
@@ -11,7 +11,7 @@ import (
 	"path"
 )
 
-func New(path string) datasources.IManagerDatasource {
+func New(path string) entity.IManagerDatasource {
 	err := os.MkdirAll(path, 0777)
 	if err != nil {
 		panic(fmt.Errorf("adapter - datasource - New: %w", err))
@@ -25,7 +25,7 @@ type FileManager struct {
 
 func (f *FileManager) CreateDataSource(
 	ctx context.Context,
-	datasource *datasources.Datasource) *custom_error.CustomError {
+	datasource *entity.Datasource) *custom_error.CustomError {
 
 	err := os.WriteFile(path.Join(f.Path, datasource.Name), []byte(*datasource.Data), fs.FileMode(0777))
 	if err != nil {
@@ -40,7 +40,7 @@ func (f *FileManager) CreateDataSource(
 
 func (f *FileManager) ReadDataSource(
 	ctx context.Context,
-	datasource *datasources.Datasource) *custom_error.CustomError {
+	datasource *entity.Datasource) *custom_error.CustomError {
 
 	data, err := os.ReadFile(path.Join(f.Path, datasource.Name))
 	if err != nil {
@@ -57,7 +57,7 @@ func (f *FileManager) ReadDataSource(
 	return nil
 }
 
-func (f *FileManager) UpdateDataSource(ctx context.Context, datasource *datasources.Datasource) *custom_error.CustomError {
+func (f *FileManager) UpdateDataSource(ctx context.Context, datasource *entity.Datasource) *custom_error.CustomError {
 	err := os.WriteFile(path.Join(f.Path, datasource.Name), []byte(*datasource.Data), fs.FileMode(0777))
 	if err != nil {
 		return custom_error.NewCustomError(
@@ -69,7 +69,7 @@ func (f *FileManager) UpdateDataSource(ctx context.Context, datasource *datasour
 	return nil
 }
 
-func (f *FileManager) DeleteDataSource(ctx context.Context, datasource *datasources.Datasource) *custom_error.CustomError {
+func (f *FileManager) DeleteDataSource(ctx context.Context, datasource *entity.Datasource) *custom_error.CustomError {
 	err := os.Remove(path.Join(f.Path, datasource.Name))
 	if err != nil {
 		return custom_error.NewCustomError(

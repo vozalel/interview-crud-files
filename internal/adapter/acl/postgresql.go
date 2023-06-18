@@ -5,14 +5,14 @@ import (
 	"errors"
 	"fmt"
 	"github.com/jackc/pgx/v4"
-	"github.com/vozalel/interview-crud-files/internal/entity/datasources"
+	"github.com/vozalel/interview-crud-files/internal/entity"
 	"github.com/vozalel/interview-crud-files/pkg/custom_error"
 	"github.com/vozalel/interview-crud-files/pkg/logger"
 	"github.com/vozalel/interview-crud-files/pkg/postgres"
 	"net/http"
 )
 
-func New(postgres *postgres.Postgres) datasources.IManagerACL {
+func New(postgres *postgres.Postgres) entity.IManagerACL {
 	return &Acl{
 		Postgres: postgres,
 	}
@@ -29,9 +29,9 @@ type Acl struct {
 
 func (a *Acl) GetUserPerformACL(
 	ctx context.Context,
-	user *datasources.User) (datasources.PerformACL, *custom_error.CustomError) {
+	user *entity.User) (entity.PerformACL, *custom_error.CustomError) {
 
-	acl := datasources.PerformACL{}
+	acl := entity.PerformACL{}
 	sql := `SELECT "create", list FROM ` + tableACLUserPerform + `WHERE user_id = $1`
 	args := []interface{}{user.ID}
 	err := a.Pool.QueryRow(
@@ -61,8 +61,8 @@ func (a *Acl) GetUserPerformACL(
 }
 
 func (a *Acl) GrantUserPerformACL(
-	ctx context.Context, user *datasources.User,
-	acl datasources.PerformACL) *custom_error.CustomError {
+	ctx context.Context, user *entity.User,
+	acl entity.PerformACL) *custom_error.CustomError {
 
 	sql := `INSERT INTO` + tableACLUserPerform +
 		`(user_id, "create", list)
@@ -100,7 +100,7 @@ func (a *Acl) GrantUserPerformACL(
 }
 
 func (a *Acl) RevokeUserPerformACL(
-	ctx context.Context, user *datasources.User) *custom_error.CustomError {
+	ctx context.Context, user *entity.User) *custom_error.CustomError {
 
 	sql := `DELETE FROM ` + tableACLUserPerform + `WHERE user_id = $1`
 	args := []interface{}{user.ID}
@@ -126,10 +126,10 @@ func (a *Acl) RevokeUserPerformACL(
 }
 
 func (a *Acl) GetUserSourceACL(
-	ctx context.Context, user *datasources.User,
-	datasource *datasources.Datasource) (datasources.DatasourceACL, *custom_error.CustomError) {
+	ctx context.Context, user *entity.User,
+	datasource *entity.Datasource) (entity.DatasourceACL, *custom_error.CustomError) {
 
-	acl := datasources.DatasourceACL{}
+	acl := entity.DatasourceACL{}
 	sql := `SELECT read, update, delete, "grant", revoke FROM ` + tableACLUserDatasource + ` WHERE user_id = $1 AND datasource_name = $2`
 	args := []interface{}{user.ID, datasource.Name}
 	err := a.Pool.QueryRow(
@@ -163,9 +163,9 @@ func (a *Acl) GetUserSourceACL(
 }
 
 func (a *Acl) GrantUserSourceACL(
-	ctx context.Context, user *datasources.User,
-	datasource *datasources.Datasource,
-	acl datasources.DatasourceACL) *custom_error.CustomError {
+	ctx context.Context, user *entity.User,
+	datasource *entity.Datasource,
+	acl entity.DatasourceACL) *custom_error.CustomError {
 
 	sql := `INSERT INTO ` + tableACLUserDatasource +
 		`(user_id, datasource_name, read, update, delete, "grant", revoke)
@@ -206,8 +206,8 @@ func (a *Acl) GrantUserSourceACL(
 }
 
 func (a *Acl) RevokeUserSourceACL(
-	ctx context.Context, user *datasources.User,
-	datasource *datasources.Datasource) *custom_error.CustomError {
+	ctx context.Context, user *entity.User,
+	datasource *entity.Datasource) *custom_error.CustomError {
 
 	sql := `DELETE FROM ` + tableACLUserDatasource + ` WHERE user_id = $1 AND datasource_name = $2`
 	args := []interface{}{user.ID, datasource.Name}

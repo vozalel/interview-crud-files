@@ -3,13 +3,13 @@ package datasource
 import (
 	"context"
 	"fmt"
-	"github.com/vozalel/interview-crud-files/internal/entity/datasources"
+	"github.com/vozalel/interview-crud-files/internal/entity"
 	"testing"
 )
 
-var fileManager datasources.IManagerDatasource
+var fileManager entity.IManagerDatasource
 
-func getManagerFile() datasources.IManagerDatasource {
+func getManagerFile() entity.IManagerDatasource {
 	if fileManager == nil {
 		fileManager = New("test_fm")
 	}
@@ -20,7 +20,7 @@ func TestFileManager_CreateDataSource(t *testing.T) {
 	manager := getManagerFile()
 	data := "test_data"
 
-	datasource := datasources.Datasource{
+	datasource := entity.Datasource{
 		"test_name.csv",
 		&data,
 	}
@@ -34,7 +34,7 @@ func TestFileManager_CreateDataSource(t *testing.T) {
 func TestFileManager_ReadDataSource(t *testing.T) {
 	manager := getManagerFile()
 
-	datasource := datasources.Datasource{
+	datasource := entity.Datasource{
 		Name: "test_name.csv",
 	}
 
@@ -48,7 +48,7 @@ func TestFileManager_UpdateDataSource(t *testing.T) {
 	manager := getManagerFile()
 	data := "test_data_update"
 
-	datasource := datasources.Datasource{
+	datasource := entity.Datasource{
 		"test_name.csv",
 		&data,
 	}
@@ -62,7 +62,7 @@ func TestFileManager_UpdateDataSource(t *testing.T) {
 func TestFileManager_DeleteDataSource(t *testing.T) {
 	manager := getManagerFile()
 
-	datasource := datasources.Datasource{
+	datasource := entity.Datasource{
 		Name: "test_name.csv",
 	}
 

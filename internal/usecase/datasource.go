@@ -1,16 +1,16 @@
-package crud
+package usecase
 
 import (
 	"context"
 	"errors"
-	"github.com/vozalel/interview-crud-files/internal/entity/datasources"
+	"github.com/vozalel/interview-crud-files/internal/entity"
 	"github.com/vozalel/interview-crud-files/pkg/custom_error"
 	"github.com/vozalel/interview-crud-files/pkg/logger"
 	"net/http"
 )
 
-func New(managerACL datasources.IManagerACL,
-	managerDatasource datasources.IManagerDatasource) datasources.IDatasourceUC {
+func New(managerACL entity.IManagerACL,
+	managerDatasource entity.IManagerDatasource) entity.IDatasourceUC {
 	return &Usecase{
 		managerACL:        managerACL,
 		managerDatasource: managerDatasource,
@@ -18,8 +18,8 @@ func New(managerACL datasources.IManagerACL,
 }
 
 type Usecase struct {
-	managerACL        datasources.IManagerACL
-	managerDatasource datasources.IManagerDatasource
+	managerACL        entity.IManagerACL
+	managerDatasource entity.IManagerDatasource
 }
 
 var (
@@ -31,8 +31,8 @@ var (
 )
 
 func (u *Usecase) CreateDataSource(
-	ctx context.Context, user *datasources.User,
-	datasource *datasources.Datasource) *custom_error.CustomError {
+	ctx context.Context, user *entity.User,
+	datasource *entity.Datasource) *custom_error.CustomError {
 
 	aclPerform, errCustom := u.managerACL.GetUserPerformACL(ctx, user)
 	if errCustom != nil {
@@ -51,7 +51,7 @@ func (u *Usecase) CreateDataSource(
 		)
 	}
 
-	errCustom = u.managerACL.GrantUserSourceACL(ctx, user, datasource, datasources.MaxSourcePermission)
+	errCustom = u.managerACL.GrantUserSourceACL(ctx, user, datasource, entity.MaxSourcePermission)
 	if errCustom != nil {
 		logger.Instance.Warn("usecase - crud - CreateDataSource - u.managerDatasource.CreateDataSource()")
 		// fixme transaction
@@ -61,7 +61,7 @@ func (u *Usecase) CreateDataSource(
 	return nil
 }
 
-func (u *Usecase) ReadDataSource(ctx context.Context, user *datasources.User, datasource *datasources.Datasource) *custom_error.CustomError {
+func (u *Usecase) ReadDataSource(ctx context.Context, user *entity.User, datasource *entity.Datasource) *custom_error.CustomError {
 	aclSource, ErrCustom := u.managerACL.GetUserSourceACL(ctx, user, datasource)
 	if ErrCustom != nil {
 		return ErrCustom.Wrap(
@@ -75,7 +75,7 @@ func (u *Usecase) ReadDataSource(ctx context.Context, user *datasources.User, da
 	return u.managerDatasource.ReadDataSource(ctx, datasource)
 }
 
-func (u *Usecase) UpdateDataSource(ctx context.Context, user *datasources.User, datasource *datasources.Datasource) *custom_error.CustomError {
+func (u *Usecase) UpdateDataSource(ctx context.Context, user *entity.User, datasource *entity.Datasource) *custom_error.CustomError {
 	aclSource, ErrCustom := u.managerACL.GetUserSourceACL(ctx, user, datasource)
 	if ErrCustom != nil {
 		return ErrCustom.Wrap(
@@ -89,7 +89,7 @@ func (u *Usecase) UpdateDataSource(ctx context.Context, user *datasources.User, 
 	return u.managerDatasource.UpdateDataSource(ctx, datasource)
 }
 
-func (u *Usecase) DeleteDataSource(ctx context.Context, user *datasources.User, datasource *datasources.Datasource) *custom_error.CustomError {
+func (u *Usecase) DeleteDataSource(ctx context.Context, user *entity.User, datasource *entity.Datasource) *custom_error.CustomError {
 	aclSource, ErrCustom := u.managerACL.GetUserSourceACL(ctx, user, datasource)
 	if ErrCustom != nil {
 		return ErrCustom.Wrap(
@@ -103,7 +103,7 @@ func (u *Usecase) DeleteDataSource(ctx context.Context, user *datasources.User, 
 	return u.managerDatasource.DeleteDataSource(ctx, datasource)
 }
 
-func (u *Usecase) ListDataSources(ctx context.Context, user *datasources.User) ([]datasources.DatasourceName, *custom_error.CustomError) {
+func (u *Usecase) ListDataSources(ctx context.Context, user *entity.User) ([]string, *custom_error.CustomError) {
 	aclPerform, errCustom := u.managerACL.GetUserPerformACL(ctx, user)
 	if errCustom != nil {
 		return nil, errCustom.Wrap(
