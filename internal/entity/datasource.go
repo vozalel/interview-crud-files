@@ -6,7 +6,7 @@ import (
 )
 
 type Datasource struct {
-	Name string
+	Name string `json:"name"`
 	Data []byte
 }
 

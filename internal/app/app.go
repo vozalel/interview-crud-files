@@ -34,7 +34,6 @@ func Run(cfg *config.Config) {
 	gin.SetMode(gin.ReleaseMode)
 	handler := gin.New()
 	http.NewRouter(handler, datasourceUC)
-
 	httpServer := http_server.New(handler, http_server.Port(cfg.HTTP.Port))
 
 	interrupt := make(chan os.Signal, 1)

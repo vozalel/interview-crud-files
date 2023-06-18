@@ -104,7 +104,41 @@ func (datasourceRoutes *datasourceRoutes) createDatasource(ctx *gin.Context) {
 // @Failure		500 {object} properErrorResponse "Internal error"
 // @Router      / [get]
 func (datasourceRoutes *datasourceRoutes) readDatasource(ctx *gin.Context) {
+	ctxNew := ctx.Request.Context()
 
+	user, ok := ctxNew.Value(dto.ContextKeyUser).(entity.User)
+	if !ok {
+		respondWithCustomError(ctx,
+			custom_error.New(
+				dto.ErrorUserNotFoundInContext,
+				http.StatusBadRequest,
+				dto.MessageIncorrectRequest,
+			),
+		)
+		return
+	}
+
+	datasource := entity.Datasource{}
+	if err := ctx.ShouldBindQuery(&datasource); err != nil {
+		respondWithCustomError(
+			ctx,
+			custom_error.New(
+				fmt.Errorf("http - routes - readDatasource - dto.ParseRequestBody():%w", err),
+				http.StatusBadRequest,
+				dto.MessageIncorrectRequest,
+			),
+		)
+		return
+	}
+
+	errCustom := datasourceRoutes.datasourceUC.ReadDataSource(ctxNew, &user, &datasource)
+	if errCustom != nil {
+		respondWithCustomError(ctx,
+			errCustom.Wrap("http - routes - readDatasource - datasourceRoutes.datasourceUC.ReadDataSource()"),
+		)
+	}
+
+	ctx.JSON(http.StatusOK, datasource)
 }
 
 // @Summary     update datasource
@@ -121,7 +155,56 @@ func (datasourceRoutes *datasourceRoutes) readDatasource(ctx *gin.Context) {
 // @Failure		500 {object} properErrorResponse "Internal error"
 // @Router      / [put]
 func (datasourceRoutes *datasourceRoutes) updateDatasource(ctx *gin.Context) {
+	ctxNew := ctx.Request.Context()
 
+	user, ok := ctxNew.Value(dto.ContextKeyUser).(entity.User)
+	if !ok {
+		respondWithCustomError(ctx,
+			custom_error.New(
+				dto.ErrorUserNotFoundInContext,
+				http.StatusBadRequest,
+				dto.MessageIncorrectRequest,
+			),
+		)
+		return
+	}
+
+	if err := ctx.Request.ParseMultipartForm(32 << 20); err != nil {
+		respondWithCustomError(
+			ctx,
+			custom_error.New(
+				fmt.Errorf("c.Request.ParseMultipartForm() error:%w", err),
+				http.StatusBadRequest,
+				dto.MessageIncorrectRequest,
+			),
+		)
+		return
+	}
+
+	datasource, err := dto.ParseRequestBody(ctx.Request.MultipartForm.File)
+	if err != nil {
+		respondWithCustomError(ctx,
+			custom_error.New(
+				fmt.Errorf("http - routes - updateDatasource - dto.ParseRequestBody():%w", err),
+				http.StatusBadRequest,
+				dto.MessageIncorrectRequest,
+			),
+		)
+		return
+	}
+
+	errCustom := datasourceRoutes.datasourceUC.UpdateDataSource(ctxNew, &user, &datasource)
+	if errCustom != nil {
+		respondWithCustomError(
+			ctx,
+			errCustom.Wrap(
+				"http - routes - updateDatasource datasourceRoutes.datasourceUC.CreateDataSource()",
+			),
+		)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dto.MessageOk)
 }
 
 // @Summary     delete datasource
@@ -135,5 +218,43 @@ func (datasourceRoutes *datasourceRoutes) updateDatasource(ctx *gin.Context) {
 // @Failure		500 {object} properErrorResponse "Internal error"
 // @Router      / [delete]
 func (datasourceRoutes *datasourceRoutes) deleteDatasource(ctx *gin.Context) {
+	ctxNew := ctx.Request.Context()
 
+	user, ok := ctxNew.Value(dto.ContextKeyUser).(entity.User)
+	if !ok {
+		respondWithCustomError(ctx,
+			custom_error.New(
+				dto.ErrorUserNotFoundInContext,
+				http.StatusBadRequest,
+				dto.MessageIncorrectRequest,
+			),
+		)
+		return
+	}
+
+	datasource := entity.Datasource{}
+	if err := ctx.ShouldBindQuery(&datasource); err != nil {
+		respondWithCustomError(
+			ctx,
+			custom_error.New(
+				fmt.Errorf("http - routes - deleteDatasource - dto.ParseRequestBody():%w", err),
+				http.StatusBadRequest,
+				dto.MessageIncorrectRequest,
+			),
+		)
+		return
+	}
+
+	errCustom := datasourceRoutes.datasourceUC.DeleteDataSource(ctxNew, &user, &datasource)
+	if errCustom != nil {
+		respondWithCustomError(
+			ctx,
+			errCustom.Wrap(
+				"http - routes - deleteDatasource datasourceRoutes.datasourceUC.CreateDataSource()",
+			),
+		)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dto.MessageOk)
 }

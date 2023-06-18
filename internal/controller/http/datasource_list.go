@@ -2,7 +2,10 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/vozalel/interview-crud-files/internal/controller/http/dto"
 	"github.com/vozalel/interview-crud-files/internal/entity"
+	"github.com/vozalel/interview-crud-files/pkg/custom_error"
+	"net/http"
 )
 
 type datasourceListRoutes struct {
@@ -30,5 +33,26 @@ func newDatasourceListRoutes(handler *gin.RouterGroup, datasourceUC entity.IData
 // @Failure		500 {object} properErrorResponse "Internal error"
 // @Router      /list [get]
 func (datasourceRoutes *datasourceRoutes) readDatasourceList(ctx *gin.Context) {
+	ctxNew := ctx.Request.Context()
+	user, ok := ctxNew.Value(dto.ContextKeyUser).(entity.User)
+	if !ok {
+		respondWithCustomError(ctx,
+			custom_error.New(
+				dto.ErrorUserNotFoundInContext,
+				http.StatusBadRequest,
+				dto.MessageIncorrectRequest,
+			),
+		)
+		return
+	}
 
+	listDatasource, errCustom := datasourceRoutes.datasourceUC.ListDataSources(ctx.Request.Context(), &user)
+	if errCustom != nil {
+		respondWithCustomError(ctx,
+			errCustom.Wrap("http - datasourceListRoutes - readDatasourceList"),
+		)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, listDatasource)
 }
