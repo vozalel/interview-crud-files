@@ -13,6 +13,8 @@ type Datasource struct {
 //go:generate mockgen -source=datasource.go -destination=./mock/datasource_mocks.go -package=mock
 
 type IManagerDatasource interface {
+	ExistDataSource(datasource *Datasource) (bool, *custom_error.CustomError)
+
 	CreateDataSource(ctx context.Context, datasource *Datasource) *custom_error.CustomError
 	ReadDataSource(ctx context.Context, datasource *Datasource) *custom_error.CustomError
 	UpdateDataSource(ctx context.Context, datasource *Datasource) *custom_error.CustomError

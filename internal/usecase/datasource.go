@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/vozalel/interview-crud-files/internal/entity"
 	"github.com/vozalel/interview-crud-files/pkg/custom_error"
 	"github.com/vozalel/interview-crud-files/pkg/logger"
@@ -34,6 +35,7 @@ func (u *Usecase) CreateDataSource(
 	ctx context.Context, user *entity.User,
 	datasource *entity.Datasource) *custom_error.CustomError {
 
+	// FIXME TRANSACTION!!!
 	aclPerform, errCustom := u.managerACL.GetUserPerformACL(ctx, user)
 	if errCustom != nil {
 		return errCustom.Wrap(
@@ -42,6 +44,20 @@ func (u *Usecase) CreateDataSource(
 	}
 	if aclPerform.Create == false {
 		return ErrorPermissionDenied
+	}
+
+	ok, errCustom := u.managerDatasource.ExistDataSource(datasource)
+	if !ok {
+		return custom_error.New(
+			fmt.Errorf("usecase - Usecase - CreateDataSource - !u.managerDatasource.ExistDataSource()"),
+			http.StatusConflict,
+			"file already exist",
+		)
+	}
+	if errCustom != nil {
+		return errCustom.Wrap(
+			"usecase - Usecase - CreateDataSource - u.managerDatasource.ExistDataSource()",
+		)
 	}
 
 	errCustom = u.managerDatasource.CreateDataSource(ctx, datasource)
@@ -61,10 +77,13 @@ func (u *Usecase) CreateDataSource(
 	return nil
 }
 
-func (u *Usecase) ReadDataSource(ctx context.Context, user *entity.User, datasource *entity.Datasource) *custom_error.CustomError {
-	aclSource, ErrCustom := u.managerACL.GetUserSourceACL(ctx, user, datasource)
-	if ErrCustom != nil {
-		return ErrCustom.Wrap(
+func (u *Usecase) ReadDataSource(
+	ctx context.Context, user *entity.User,
+	datasource *entity.Datasource) *custom_error.CustomError {
+
+	aclSource, errCustom := u.managerACL.GetUserSourceACL(ctx, user, datasource)
+	if errCustom != nil {
+		return errCustom.Wrap(
 			"usecase - crud - ReadDataSource - u.managerACL.GetUserSourceACL()",
 		)
 	}
@@ -75,10 +94,14 @@ func (u *Usecase) ReadDataSource(ctx context.Context, user *entity.User, datasou
 	return u.managerDatasource.ReadDataSource(ctx, datasource)
 }
 
-func (u *Usecase) UpdateDataSource(ctx context.Context, user *entity.User, datasource *entity.Datasource) *custom_error.CustomError {
-	aclSource, ErrCustom := u.managerACL.GetUserSourceACL(ctx, user, datasource)
-	if ErrCustom != nil {
-		return ErrCustom.Wrap(
+func (u *Usecase) UpdateDataSource(
+	ctx context.Context, user *entity.User,
+	datasource *entity.Datasource) *custom_error.CustomError {
+
+	// FIXME TRANSACTION!!!
+	aclSource, errCustom := u.managerACL.GetUserSourceACL(ctx, user, datasource)
+	if errCustom != nil {
+		return errCustom.Wrap(
 			"usecase - crud - UpdateDataSource - u.managerACL.GetUserSourceACL()",
 		)
 	}
@@ -86,13 +109,30 @@ func (u *Usecase) UpdateDataSource(ctx context.Context, user *entity.User, datas
 		return ErrorPermissionDenied
 	}
 
+	ok, errCustom := u.managerDatasource.ExistDataSource(datasource)
+	if !ok {
+		return custom_error.New(
+			fmt.Errorf("usecase - Usecase - UpdateDataSource - !u.managerDatasource.ExistDataSource()"),
+			http.StatusNotFound,
+			"file not exist",
+		)
+	}
+	if errCustom != nil {
+		return errCustom.Wrap(
+			"usecase - Usecase - UpdateDataSource - u.managerDatasource.ExistDataSource()",
+		)
+	}
+
 	return u.managerDatasource.UpdateDataSource(ctx, datasource)
 }
 
-func (u *Usecase) DeleteDataSource(ctx context.Context, user *entity.User, datasource *entity.Datasource) *custom_error.CustomError {
-	aclSource, ErrCustom := u.managerACL.GetUserSourceACL(ctx, user, datasource)
-	if ErrCustom != nil {
-		return ErrCustom.Wrap(
+func (u *Usecase) DeleteDataSource(
+	ctx context.Context, user *entity.User,
+	datasource *entity.Datasource) *custom_error.CustomError {
+
+	aclSource, errCustom := u.managerACL.GetUserSourceACL(ctx, user, datasource)
+	if errCustom != nil {
+		return errCustom.Wrap(
 			"usecase - crud - DeleteDataSource - u.managerACL.GetUserSourceACL()",
 		)
 	}
@@ -103,7 +143,9 @@ func (u *Usecase) DeleteDataSource(ctx context.Context, user *entity.User, datas
 	return u.managerDatasource.DeleteDataSource(ctx, datasource)
 }
 
-func (u *Usecase) ListDataSources(ctx context.Context, user *entity.User) ([]string, *custom_error.CustomError) {
+func (u *Usecase) ListDataSources(
+	ctx context.Context, user *entity.User) ([]string, *custom_error.CustomError) {
+
 	aclPerform, errCustom := u.managerACL.GetUserPerformACL(ctx, user)
 	if errCustom != nil {
 		return nil, errCustom.Wrap(

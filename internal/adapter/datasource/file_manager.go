@@ -23,30 +23,27 @@ type FileManager struct {
 	Path string
 }
 
-func (f *FileManager) CreateDataSource(
-	ctx context.Context,
-	datasource *entity.Datasource) *custom_error.CustomError {
-
-	stat, err := os.Stat(path.Join(f.Path, datasource.Name))
+func (f *FileManager) ExistDataSource(datasource *entity.Datasource) (bool, *custom_error.CustomError) {
+	_, err := os.Stat(path.Join(f.Path, datasource.Name))
 	if err != nil {
-		if !os.IsNotExist(err) {
-			return custom_error.New(
+		if os.IsNotExist(err) {
+			return false, nil
+		} else {
+			return false, custom_error.New(
 				fmt.Errorf("adapter - FileManager - CreateDataSource - os.Stat(): %w", err),
 				http.StatusInternalServerError,
 				"file system error",
 			)
 		}
 	}
+	return true, nil
+}
 
-	if stat != nil {
-		return custom_error.New(
-			fmt.Errorf("adapter - FileManager - CreateDataSource - os.Stat(): %w", err),
-			http.StatusConflict,
-			"file already exist",
-		)
-	}
+func (f *FileManager) CreateDataSource(
+	ctx context.Context,
+	datasource *entity.Datasource) *custom_error.CustomError {
 
-	err = os.WriteFile(path.Join(f.Path, datasource.Name), datasource.Data, fs.FileMode(0777))
+	err := os.WriteFile(path.Join(f.Path, datasource.Name), datasource.Data, fs.FileMode(0777))
 	if err != nil {
 		return custom_error.New(
 			fmt.Errorf("adapter - FileManager - CreateDataSource - os.WriteFile(): %w", err),
@@ -79,18 +76,7 @@ func (f *FileManager) UpdateDataSource(
 	ctx context.Context,
 	datasource *entity.Datasource) *custom_error.CustomError {
 
-	_, err := os.Stat(path.Join(f.Path, datasource.Name))
-	if err != nil {
-		if os.IsNotExist(err) {
-			return custom_error.New(
-				fmt.Errorf("adapter - FileManager - UpdateDataSource - os.Stat(): %w", err),
-				http.StatusNotFound,
-				"file not exist",
-			)
-		}
-	}
-
-	err = os.WriteFile(path.Join(f.Path, datasource.Name), datasource.Data, fs.FileMode(0777))
+	err := os.WriteFile(path.Join(f.Path, datasource.Name), datasource.Data, fs.FileMode(0777))
 	if err != nil {
 		return custom_error.New(
 			fmt.Errorf("adapter - FileManager - UpdateDataSource - os.WriteFile(): %w", err),
