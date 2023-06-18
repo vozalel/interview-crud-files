@@ -104,6 +104,11 @@ func (datasourceRoutes *datasourceRoutes) createDatasource(ctx *gin.Context) {
 // @Failure		500 {object} properErrorResponse "Internal error"
 // @Router      / [get]
 func (datasourceRoutes *datasourceRoutes) readDatasource(ctx *gin.Context) {
+	var (
+		datasourceDTO dto.Datasource
+		datasource    entity.Datasource
+	)
+
 	ctxNew := ctx.Request.Context()
 
 	user, ok := ctxNew.Value(dto.ContextKeyUser).(entity.User)
@@ -118,8 +123,7 @@ func (datasourceRoutes *datasourceRoutes) readDatasource(ctx *gin.Context) {
 		return
 	}
 
-	datasource := entity.Datasource{}
-	if err := ctx.ShouldBindQuery(&datasource); err != nil {
+	if err := ctx.ShouldBindQuery(&datasourceDTO); err != nil {
 		respondWithCustomError(
 			ctx,
 			custom_error.New(
@@ -129,6 +133,10 @@ func (datasourceRoutes *datasourceRoutes) readDatasource(ctx *gin.Context) {
 			),
 		)
 		return
+	}
+
+	datasource = entity.Datasource{
+		Name: datasourceDTO.Name,
 	}
 
 	errCustom := datasourceRoutes.datasourceUC.ReadDataSource(ctxNew, &user, &datasource)
@@ -155,6 +163,10 @@ func (datasourceRoutes *datasourceRoutes) readDatasource(ctx *gin.Context) {
 // @Failure		500 {object} properErrorResponse "Internal error"
 // @Router      / [put]
 func (datasourceRoutes *datasourceRoutes) updateDatasource(ctx *gin.Context) {
+	var (
+		datasource entity.Datasource
+	)
+
 	ctxNew := ctx.Request.Context()
 
 	user, ok := ctxNew.Value(dto.ContextKeyUser).(entity.User)
@@ -218,6 +230,11 @@ func (datasourceRoutes *datasourceRoutes) updateDatasource(ctx *gin.Context) {
 // @Failure		500 {object} properErrorResponse "Internal error"
 // @Router      / [delete]
 func (datasourceRoutes *datasourceRoutes) deleteDatasource(ctx *gin.Context) {
+	var (
+		datasourceDTO dto.Datasource
+		datasource    entity.Datasource
+	)
+
 	ctxNew := ctx.Request.Context()
 
 	user, ok := ctxNew.Value(dto.ContextKeyUser).(entity.User)
@@ -232,8 +249,7 @@ func (datasourceRoutes *datasourceRoutes) deleteDatasource(ctx *gin.Context) {
 		return
 	}
 
-	datasource := entity.Datasource{}
-	if err := ctx.ShouldBindQuery(&datasource); err != nil {
+	if err := ctx.ShouldBindQuery(&datasourceDTO); err != nil {
 		respondWithCustomError(
 			ctx,
 			custom_error.New(
@@ -243,6 +259,11 @@ func (datasourceRoutes *datasourceRoutes) deleteDatasource(ctx *gin.Context) {
 			),
 		)
 		return
+	}
+
+	datasource = entity.Datasource{
+		Name: datasourceDTO.Name,
+		Data: datasourceDTO.Data,
 	}
 
 	errCustom := datasourceRoutes.datasourceUC.DeleteDataSource(ctxNew, &user, &datasource)

@@ -1,4 +1,6 @@
 package dto
 
-type CreateDatasourceRequest struct {
+type Datasource struct {
+	Name string `json:"name"`
+	Data []byte
 }

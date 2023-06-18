@@ -33,6 +33,11 @@ func newDatasourceListRoutes(handler *gin.RouterGroup, datasourceUC entity.IData
 // @Failure		500 {object} properErrorResponse "Internal error"
 // @Router      /list [get]
 func (datasourceRoutes *datasourceRoutes) readDatasourceList(ctx *gin.Context) {
+	var (
+		listDatasource dto.ResponseDatasourceList
+		errCustom      *custom_error.CustomError
+	)
+
 	ctxNew := ctx.Request.Context()
 	user, ok := ctxNew.Value(dto.ContextKeyUser).(entity.User)
 	if !ok {
@@ -46,7 +51,7 @@ func (datasourceRoutes *datasourceRoutes) readDatasourceList(ctx *gin.Context) {
 		return
 	}
 
-	listDatasource, errCustom := datasourceRoutes.datasourceUC.ListDataSources(ctx.Request.Context(), &user)
+	listDatasource, errCustom = datasourceRoutes.datasourceUC.ListDataSources(ctx.Request.Context(), &user)
 	if errCustom != nil {
 		respondWithCustomError(ctx,
 			errCustom.Wrap("http - datasourceListRoutes - readDatasourceList"),
