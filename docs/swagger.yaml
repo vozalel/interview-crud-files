@@ -20,17 +20,49 @@ host: localhost:8080
 info:
   contact: {}
   description: Using a translation service as an example
-  title: Go Clean Template API
+  title: interview-crud-files api
   version: "1.0"
 paths:
-  /:
+  /list:
+    get:
+      description: Read datasource list
+      operationId: readDatasourceList
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Incorrect request
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "403":
+          description: Permission deny
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+      summary: Read datasource list
+      tags:
+      - datasource list
+  /source:
     delete:
       description: delete datasource by name
       operationId: datasource_delete
       parameters:
-      - description: delete by datasourceName
+      - description: delete by name
         in: query
-        name: datasourceName
+        name: name
         required: true
         type: string
       produces:
@@ -55,9 +87,9 @@ paths:
       description: read datasource
       operationId: readDatasource
       parameters:
-      - description: datasourceName
+      - description: name
         in: query
-        name: datasourceName
+        name: name
         required: true
         type: string
       produces:
@@ -86,45 +118,10 @@ paths:
       summary: read datasource
       tags:
       - datasource
-    post:
+    patch:
       consumes:
       - multipart/form-data
-      description: create datasource by datasource name
-      operationId: createDatasource
-      parameters:
-      - description: files to download
-        in: formData
-        items:
-          type: file
-        name: filenames
-        required: true
-        type: array
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: Incorrect request
-          schema:
-            $ref: '#/definitions/properErrorResponse'
-        "403":
-          description: Permission deny
-          schema:
-            $ref: '#/definitions/properErrorResponse'
-        "500":
-          description: Internal error
-          schema:
-            $ref: '#/definitions/properErrorResponse'
-      summary: create datasource
-      tags:
-      - datasource
-    put:
-      consumes:
-      - multipart/form-data
-      description: update datasource by datasourceName
+      description: update datasource by name
       operationId: datasource_update
       parameters:
       - description: files to update
@@ -160,19 +157,26 @@ paths:
       summary: update datasource
       tags:
       - datasource
-  /list:
-    get:
-      description: Read datasource list
-      operationId: readDatasourceList
+    post:
+      consumes:
+      - multipart/form-data
+      description: create datasource by datasource name
+      operationId: createDatasource
+      parameters:
+      - description: files to download
+        in: formData
+        items:
+          type: file
+        name: files
+        required: true
+        type: array
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              type: string
-            type: array
+            type: string
         "400":
           description: Incorrect request
           schema:
@@ -181,15 +185,11 @@ paths:
           description: Permission deny
           schema:
             $ref: '#/definitions/properErrorResponse'
-        "404":
-          description: Not found
-          schema:
-            $ref: '#/definitions/properErrorResponse'
         "500":
           description: Internal error
           schema:
             $ref: '#/definitions/properErrorResponse'
-      summary: Read datasource list
+      summary: create datasource
       tags:
-      - datasource list
+      - datasource
 swagger: "2.0"

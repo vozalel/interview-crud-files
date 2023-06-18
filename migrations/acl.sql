@@ -17,3 +17,5 @@ CREATE TABLE acl.user_perform (
                                   list bool NOT NULL,
                                   CONSTRAINT user_perform_un UNIQUE (user_id)
 );
+
+INSERT INTO acl.user_perform(user_id, "create", list) values (1, true, true); -- admin

@@ -38,8 +38,7 @@ func (datasourceRoutes *datasourceRoutes) readDatasourceList(ctx *gin.Context) {
 		errCustom      *custom_error.CustomError
 	)
 
-	ctxNew := ctx.Request.Context()
-	user, ok := ctxNew.Value(dto.ContextKeyUser).(entity.User)
+	user, ok := ctx.Value(dto.ContextKeyUser).(entity.User)
 	if !ok {
 		respondWithCustomError(ctx,
 			custom_error.New(

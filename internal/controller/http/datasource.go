@@ -20,7 +20,7 @@ func newDatasourceRoutes(handler *gin.RouterGroup, datasourceUC entity.IDatasour
 	{
 		handler.POST("/", r.createDatasource)
 		handler.GET("/", r.readDatasource)
-		handler.PUT("/", r.updateDatasource)
+		handler.PATCH("/", r.updateDatasource)
 		handler.DELETE("/", r.deleteDatasource)
 	}
 }
@@ -32,16 +32,16 @@ func newDatasourceRoutes(handler *gin.RouterGroup, datasourceUC entity.IDatasour
 // @Tags  	    datasource
 // @Accept      multipart/form-data
 // @Produce     json
-// @Param 		filenames formData []file true "files to download"
+// @Param 		files formData []file true "files to download"
 // @Success     200 {string} string
 // @Failure     400 {object} properErrorResponse "Incorrect request"
 // @Failure     403 {object} properErrorResponse "Permission deny"
 // @Failure		500 {object} properErrorResponse "Internal error"
-// @Router      / [post]
+// @Router      /source [post]
 func (datasourceRoutes *datasourceRoutes) createDatasource(ctx *gin.Context) {
 	ctxNew := ctx.Request.Context()
 
-	user, ok := ctxNew.Value(dto.ContextKeyUser).(entity.User)
+	user, ok := ctx.Value(dto.ContextKeyUser).(entity.User)
 	if !ok {
 		respondWithCustomError(ctx,
 			custom_error.New(
@@ -96,22 +96,21 @@ func (datasourceRoutes *datasourceRoutes) createDatasource(ctx *gin.Context) {
 // @ID          readDatasource
 // @Tags  	    datasource
 // @Produce     json
-// @Param       datasourceName query string true "datasourceName"
+// @Param       name query string true "name"
 // @Success     200 {object} ResponseDatasource
 // @Failure     400 {object} properErrorResponse "Incorrect request"
 // @Failure     403 {object} properErrorResponse "Permission deny"
 // @Failure     404 {object} properErrorResponse "Not found"
 // @Failure		500 {object} properErrorResponse "Internal error"
-// @Router      / [get]
+// @Router      /source [get]
 func (datasourceRoutes *datasourceRoutes) readDatasource(ctx *gin.Context) {
 	var (
-		datasourceDTO dto.Datasource
-		datasource    entity.Datasource
+		datasource entity.Datasource
 	)
 
 	ctxNew := ctx.Request.Context()
 
-	user, ok := ctxNew.Value(dto.ContextKeyUser).(entity.User)
+	user, ok := ctx.Value(dto.ContextKeyUser).(entity.User)
 	if !ok {
 		respondWithCustomError(ctx,
 			custom_error.New(
@@ -123,6 +122,7 @@ func (datasourceRoutes *datasourceRoutes) readDatasource(ctx *gin.Context) {
 		return
 	}
 
+	datasourceDTO := dto.Datasource{}
 	if err := ctx.ShouldBindQuery(&datasourceDTO); err != nil {
 		respondWithCustomError(
 			ctx,
@@ -144,13 +144,15 @@ func (datasourceRoutes *datasourceRoutes) readDatasource(ctx *gin.Context) {
 		respondWithCustomError(ctx,
 			errCustom.Wrap("http - routes - readDatasource - datasourceRoutes.datasourceUC.ReadDataSource()"),
 		)
+		return
 	}
 
+	// TODO: send form-data request
 	ctx.JSON(http.StatusOK, datasource)
 }
 
 // @Summary     update datasource
-// @Description update datasource by datasourceName
+// @Description update datasource by name
 // @ID          datasource_update
 // @Tags  	    datasource
 // @Accept      multipart/form-data
@@ -161,7 +163,7 @@ func (datasourceRoutes *datasourceRoutes) readDatasource(ctx *gin.Context) {
 // @Failure     403 {object} properErrorResponse "Permission deny"
 // @Failure     404 {object} properErrorResponse "Not found"
 // @Failure		500 {object} properErrorResponse "Internal error"
-// @Router      / [put]
+// @Router      /source [patch]
 func (datasourceRoutes *datasourceRoutes) updateDatasource(ctx *gin.Context) {
 	var (
 		datasource entity.Datasource
@@ -169,7 +171,7 @@ func (datasourceRoutes *datasourceRoutes) updateDatasource(ctx *gin.Context) {
 
 	ctxNew := ctx.Request.Context()
 
-	user, ok := ctxNew.Value(dto.ContextKeyUser).(entity.User)
+	user, ok := ctx.Value(dto.ContextKeyUser).(entity.User)
 	if !ok {
 		respondWithCustomError(ctx,
 			custom_error.New(
@@ -224,11 +226,11 @@ func (datasourceRoutes *datasourceRoutes) updateDatasource(ctx *gin.Context) {
 // @ID          datasource_delete
 // @Tags  	    datasource
 // @Produce     json
-// @Param       datasourceName query string true "delete by datasourceName"
+// @Param       name query string true "delete by name"
 // @Success     200 {string} string "ok"
 // @Failure     403 {object} properErrorResponse "No data or no access to it"
 // @Failure		500 {object} properErrorResponse "Internal error"
-// @Router      / [delete]
+// @Router      /source [delete]
 func (datasourceRoutes *datasourceRoutes) deleteDatasource(ctx *gin.Context) {
 	var (
 		datasourceDTO dto.Datasource
@@ -237,7 +239,7 @@ func (datasourceRoutes *datasourceRoutes) deleteDatasource(ctx *gin.Context) {
 
 	ctxNew := ctx.Request.Context()
 
-	user, ok := ctxNew.Value(dto.ContextKeyUser).(entity.User)
+	user, ok := ctx.Value(dto.ContextKeyUser).(entity.User)
 	if !ok {
 		respondWithCustomError(ctx,
 			custom_error.New(

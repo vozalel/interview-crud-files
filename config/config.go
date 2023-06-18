@@ -44,8 +44,9 @@ type (
 	}
 
 	FeatureFlag struct {
-		DumpConfig   bool `env:"FEATURE_FLAG_DUMP_CONFIG" env-default:"true"`
-		TraceEnabled bool `env:"FEATURE_FLAG_TRACE_ENABLED" env-default:"false"`
+		DumpConfig       bool `env:"FEATURE_FLAG_DUMP_CONFIG" env-default:"true"`
+		TraceEnabled     bool `env:"FEATURE_FLAG_TRACE_ENABLED" env-default:"false"`
+		SetTestUserToCtx bool `env:"FEATURE_FLAG_TRACE_ENABLED" env-default:"true"`
 	}
 )
 

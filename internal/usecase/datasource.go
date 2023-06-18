@@ -47,7 +47,7 @@ func (u *Usecase) CreateDataSource(
 	}
 
 	ok, errCustom := u.managerDatasource.ExistDataSource(datasource)
-	if !ok {
+	if ok {
 		return custom_error.New(
 			fmt.Errorf("usecase - Usecase - CreateDataSource - !u.managerDatasource.ExistDataSource()"),
 			http.StatusConflict,
@@ -80,6 +80,20 @@ func (u *Usecase) CreateDataSource(
 func (u *Usecase) ReadDataSource(
 	ctx context.Context, user *entity.User,
 	datasource *entity.Datasource) *custom_error.CustomError {
+
+	ok, errCustom := u.managerDatasource.ExistDataSource(datasource)
+	if !ok {
+		return custom_error.New(
+			fmt.Errorf("usecase - Usecase - ReadDataSource - !u.managerDatasource.ExistDataSource()"),
+			http.StatusNotFound,
+			"file not exist",
+		)
+	}
+	if errCustom != nil {
+		return errCustom.Wrap(
+			"usecase - Usecase - ReadDataSource - u.managerDatasource.ExistDataSource()",
+		)
+	}
 
 	aclSource, errCustom := u.managerACL.GetUserSourceACL(ctx, user, datasource)
 	if errCustom != nil {

@@ -17,7 +17,7 @@ func main() {
 	}
 
 	logger.Init(cfg.App.Name, cfg.App.Environment, cfg.Logger.Level)
-	feature_flag.Init(cfg.FeatureFlag.DumpConfig, cfg.FeatureFlag.TraceEnabled)
+	feature_flag.Init(cfg.FeatureFlag.DumpConfig, cfg.FeatureFlag.TraceEnabled, cfg.FeatureFlag.SetTestUserToCtx)
 
 	if feature_flag.Get().DumpConfigEnabled() {
 		spew.Dump(cfg)

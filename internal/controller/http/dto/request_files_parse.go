@@ -14,7 +14,7 @@ func ParseRequestBody(fileHeaders map[string][]*multipart.FileHeader) (datasourc
 
 	writer := multipart.NewWriter(&body)
 	defer writer.Close()
-	fileNames := fileHeaders["filenames"]
+	fileNames := fileHeaders["files"]
 
 	var files []multipart.File
 	defer func() {
@@ -23,7 +23,7 @@ func ParseRequestBody(fileHeaders map[string][]*multipart.FileHeader) (datasourc
 		}
 	}()
 
-	switch len(fileHeaders) {
+	switch len(fileNames) {
 	case 0:
 		return datasource, errors.New("multipart form parsing error")
 	case 1:

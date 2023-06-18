@@ -16,31 +16,25 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/": {
+        "/list": {
             "get": {
-                "description": "read datasource",
+                "description": "Read datasource list",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "datasource"
+                    "datasource list"
                 ],
-                "summary": "read datasource",
-                "operationId": "readDatasource",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "datasourceName",
-                        "name": "datasourceName",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
+                "summary": "Read datasource list",
+                "operationId": "readDatasourceList",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ResponseDatasource"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
@@ -68,37 +62,33 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "put": {
-                "description": "update datasource by datasourceName",
-                "consumes": [
-                    "multipart/form-data"
-                ],
+            }
+        },
+        "/source": {
+            "get": {
+                "description": "read datasource",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "datasource"
                 ],
-                "summary": "update datasource",
-                "operationId": "datasource_update",
+                "summary": "read datasource",
+                "operationId": "readDatasource",
                 "parameters": [
                     {
-                        "type": "array",
-                        "items": {
-                            "type": "file"
-                        },
-                        "description": "files to update",
-                        "name": "files",
-                        "in": "formData",
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "query",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "ok",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/ResponseDatasource"
                         }
                     },
                     "400": {
@@ -147,7 +137,7 @@ const docTemplate = `{
                             "type": "file"
                         },
                         "description": "files to download",
-                        "name": "filenames",
+                        "name": "files",
                         "in": "formData",
                         "required": true
                     }
@@ -192,8 +182,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "delete by datasourceName",
-                        "name": "datasourceName",
+                        "description": "delete by name",
+                        "name": "name",
                         "in": "query",
                         "required": true
                     }
@@ -218,27 +208,37 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/list": {
-            "get": {
-                "description": "Read datasource list",
+            },
+            "patch": {
+                "description": "update datasource by name",
+                "consumes": [
+                    "multipart/form-data"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "datasource list"
+                    "datasource"
                 ],
-                "summary": "Read datasource list",
-                "operationId": "readDatasourceList",
+                "summary": "update datasource",
+                "operationId": "datasource_update",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "file"
+                        },
+                        "description": "files to update",
+                        "name": "files",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "ok",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -304,7 +304,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "Go Clean Template API",
+	Title:            "interview-crud-files api",
 	Description:      "Using a translation service as an example",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

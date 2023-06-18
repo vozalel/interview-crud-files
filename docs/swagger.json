@@ -2,38 +2,32 @@
     "swagger": "2.0",
     "info": {
         "description": "Using a translation service as an example",
-        "title": "Go Clean Template API",
+        "title": "interview-crud-files api",
         "contact": {},
         "version": "1.0"
     },
     "host": "localhost:8080",
     "basePath": "/",
     "paths": {
-        "/": {
+        "/list": {
             "get": {
-                "description": "read datasource",
+                "description": "Read datasource list",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "datasource"
+                    "datasource list"
                 ],
-                "summary": "read datasource",
-                "operationId": "readDatasource",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "datasourceName",
-                        "name": "datasourceName",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
+                "summary": "Read datasource list",
+                "operationId": "readDatasourceList",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ResponseDatasource"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
@@ -61,37 +55,33 @@
                         }
                     }
                 }
-            },
-            "put": {
-                "description": "update datasource by datasourceName",
-                "consumes": [
-                    "multipart/form-data"
-                ],
+            }
+        },
+        "/source": {
+            "get": {
+                "description": "read datasource",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "datasource"
                 ],
-                "summary": "update datasource",
-                "operationId": "datasource_update",
+                "summary": "read datasource",
+                "operationId": "readDatasource",
                 "parameters": [
                     {
-                        "type": "array",
-                        "items": {
-                            "type": "file"
-                        },
-                        "description": "files to update",
-                        "name": "files",
-                        "in": "formData",
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "query",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "ok",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/ResponseDatasource"
                         }
                     },
                     "400": {
@@ -140,7 +130,7 @@
                             "type": "file"
                         },
                         "description": "files to download",
-                        "name": "filenames",
+                        "name": "files",
                         "in": "formData",
                         "required": true
                     }
@@ -185,8 +175,8 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "delete by datasourceName",
-                        "name": "datasourceName",
+                        "description": "delete by name",
+                        "name": "name",
                         "in": "query",
                         "required": true
                     }
@@ -211,27 +201,37 @@
                         }
                     }
                 }
-            }
-        },
-        "/list": {
-            "get": {
-                "description": "Read datasource list",
+            },
+            "patch": {
+                "description": "update datasource by name",
+                "consumes": [
+                    "multipart/form-data"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "datasource list"
+                    "datasource"
                 ],
-                "summary": "Read datasource list",
-                "operationId": "readDatasourceList",
+                "summary": "update datasource",
+                "operationId": "datasource_update",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "file"
+                        },
+                        "description": "files to update",
+                        "name": "files",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "ok",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
+                            "type": "string"
                         }
                     },
                     "400": {

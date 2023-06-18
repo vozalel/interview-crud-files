@@ -15,7 +15,7 @@ import (
 )
 
 // Swagger spec:
-// @title       Go Clean Template API
+// @title       interview-crud-files api
 // @description Using a translation service as an example
 // @version     1.0
 // @host        localhost:8080
@@ -37,6 +37,10 @@ func NewRouter(handler *gin.Engine, datasourceUC entity.IDatasourceUC) {
 
 	if feature_flag.Get().TraceEnabled() {
 		handler.Use(middleware.TracerMiddleware)
+	}
+
+	if feature_flag.Get().TestUserEmbeddedInContext() {
+		handler.Use(middleware.UserToContextSetter)
 	}
 
 	// Business endpoints:

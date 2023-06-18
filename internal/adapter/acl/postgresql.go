@@ -32,8 +32,8 @@ func (a *Acl) GetUserPerformACL(
 	user *entity.User) (entity.PerformACL, *custom_error.CustomError) {
 
 	acl := entity.PerformACL{}
-	sql := `SELECT "create", list FROM ` + tableACLUserPerform + `WHERE user_id = $1`
-	args := []interface{}{user.ID}
+	sql := `SELECT "create", list FROM ` + tableACLUserPerform + ` WHERE user_id = $1`
+	args := []interface{}{*user.ID}
 	err := a.Pool.QueryRow(
 		ctx, sql, args...).Scan(
 		&acl.Create,

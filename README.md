@@ -20,3 +20,17 @@
 
 Можно считать что файлы лежат на сервере в заранее известной директории.
 Можно считать, что авторизация уже реализована, и у нас уже есть необходимая информация (например, id пользователя)
+
+
+# Решение:
+
+go build and run .exe
+```shell
+go build github.com/vozalel/interview-crud-files/cmd/app
+.\app.exe
+```
+
+or run without build 
+```shell
+go run github.com/vozalel/interview-crud-files/cmd/app
+```
