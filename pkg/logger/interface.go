@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gofrs/uuid"
 	"github.com/sirupsen/logrus"
+	"go.opentelemetry.io/otel/trace"
 )
 
 const NameTraceUUID = "traceUUID"
@@ -52,6 +53,18 @@ func (l Logger) WithField(key string, value interface{}) Logger {
 func (l Logger) WithFields(fields map[string]interface{}) Logger {
 	if l.logger != nil {
 		return Logger{logger: l.logger.WithFields(fields)}
+	}
+
+	return l
+}
+
+func (l Logger) WithContext(ctx context.Context) Logger {
+	if l.logger != nil {
+		spanCtx := trace.SpanContextFromContext(ctx)
+
+		return l.
+			WithField("traceID", spanCtx.TraceID().String()).
+			WithField("spanID", spanCtx.SpanID().String())
 	}
 
 	return l

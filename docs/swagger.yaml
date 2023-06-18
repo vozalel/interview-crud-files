@@ -1,0 +1,195 @@
+basePath: /
+definitions:
+  ResponseDatasource:
+    properties:
+      data:
+        items:
+          type: integer
+        type: array
+      name:
+        type: string
+    type: object
+  properErrorResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Using a translation service as an example
+  title: Go Clean Template API
+  version: "1.0"
+paths:
+  /:
+    delete:
+      description: delete datasource by name
+      operationId: datasource_delete
+      parameters:
+      - description: delete by datasourceName
+        in: query
+        name: datasourceName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "403":
+          description: No data or no access to it
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+      summary: delete datasource
+      tags:
+      - datasource
+    get:
+      description: read datasource
+      operationId: readDatasource
+      parameters:
+      - description: datasourceName
+        in: query
+        name: datasourceName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ResponseDatasource'
+        "400":
+          description: Incorrect request
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "403":
+          description: Permission deny
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+      summary: read datasource
+      tags:
+      - datasource
+    post:
+      consumes:
+      - multipart/form-data
+      description: create datasource by datasource name
+      operationId: createDatasource
+      parameters:
+      - description: files to download
+        in: formData
+        items:
+          type: file
+        name: filenames
+        required: true
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Incorrect request
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "403":
+          description: Permission deny
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+      summary: create datasource
+      tags:
+      - datasource
+    put:
+      consumes:
+      - multipart/form-data
+      description: update datasource by datasourceName
+      operationId: datasource_update
+      parameters:
+      - description: files to update
+        in: formData
+        items:
+          type: file
+        name: files
+        required: true
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Incorrect request
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "403":
+          description: Permission deny
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+      summary: update datasource
+      tags:
+      - datasource
+  /list:
+    get:
+      description: Read datasource list
+      operationId: readDatasourceList
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Incorrect request
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "403":
+          description: Permission deny
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/properErrorResponse'
+      summary: Read datasource list
+      tags:
+      - datasource list
+swagger: "2.0"

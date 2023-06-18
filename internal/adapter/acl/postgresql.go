@@ -46,14 +46,14 @@ func (a *Acl) GetUserPerformACL(
 
 	if errors.Is(err, pgx.ErrNoRows) {
 		err = fmt.Errorf("adapter - acl - GetUserPerformACL - errors.Is(err, pgx.ErrNoRows)")
-		return acl, custom_error.NewCustomError(
+		return acl, custom_error.New(
 			err,
 			http.StatusForbidden,
 			"permission denied",
 		)
 	}
 	err = fmt.Errorf("adapter - acl - GetUserPerformACL - a.Pool.QueryRow(): %w", err)
-	return acl, custom_error.NewCustomError(
+	return acl, custom_error.New(
 		err,
 		http.StatusInternalServerError,
 		"internal server error",
@@ -81,7 +81,7 @@ func (a *Acl) GrantUserPerformACL(
 	tag, err := a.Pool.Exec(ctx, sql, args...)
 	if err != nil {
 		err = fmt.Errorf("adapter - acl - GrantUserSourceACL - a.Pool.Exec(): %w", err)
-		return custom_error.NewCustomError(
+		return custom_error.New(
 			err,
 			http.StatusInternalServerError,
 			"permission assignment error, please try again later",
@@ -90,7 +90,7 @@ func (a *Acl) GrantUserPerformACL(
 
 	if tag.RowsAffected() == 0 {
 		err = fmt.Errorf("adapter - acl - GrantUserSourceACL - tag.RowsAffected() == 0")
-		return custom_error.NewCustomError(
+		return custom_error.New(
 			err,
 			http.StatusInternalServerError,
 			"permission assignment error, please try again later",
@@ -107,7 +107,7 @@ func (a *Acl) RevokeUserPerformACL(
 	tag, err := a.Pool.Exec(ctx, sql, args...)
 	if err != nil {
 		err = fmt.Errorf("adapter - acl - RevokeUserPerformACL - a.Pool.Exec(): %w", err)
-		return custom_error.NewCustomError(
+		return custom_error.New(
 			err,
 			http.StatusInternalServerError,
 			"permission revocation error, please try again later",
@@ -116,7 +116,7 @@ func (a *Acl) RevokeUserPerformACL(
 
 	if tag.RowsAffected() == 0 {
 		err = fmt.Errorf("adapter - acl - RevokeUserPerformACL - tag.RowsAffected() == 0")
-		return custom_error.NewCustomError(
+		return custom_error.New(
 			err,
 			http.StatusInternalServerError,
 			"permission revocation error, please try again later",
@@ -147,14 +147,14 @@ func (a *Acl) GetUserSourceACL(
 
 	if errors.Is(err, pgx.ErrNoRows) {
 		err = fmt.Errorf("adapter - acl - GetUserSourceACL - errors.Is(err, pgx.ErrNoRows)")
-		return acl, custom_error.NewCustomError(
+		return acl, custom_error.New(
 			err,
 			http.StatusForbidden,
 			"permission denied",
 		)
 	}
 	err = fmt.Errorf("adapter - acl - GetUserSourceACL - a.Pool.QueryRow(): %w", err)
-	return acl, custom_error.NewCustomError(
+	return acl, custom_error.New(
 		err,
 		http.StatusInternalServerError,
 		"permission check error, please try again later",
@@ -187,7 +187,7 @@ func (a *Acl) GrantUserSourceACL(
 	tag, err := a.Pool.Exec(ctx, sql, args...)
 	if err != nil {
 		err = fmt.Errorf("adapter - acl - GrantUserSourceACL - a.Pool.Exec(): %w", err)
-		return custom_error.NewCustomError(
+		return custom_error.New(
 			err,
 			http.StatusInternalServerError,
 			"permission assignment error, please try again later",
@@ -196,7 +196,7 @@ func (a *Acl) GrantUserSourceACL(
 
 	if tag.RowsAffected() == 0 {
 		err = fmt.Errorf("adapter - acl - GrantUserSourceACL - tag.RowsAffected() == 0")
-		return custom_error.NewCustomError(
+		return custom_error.New(
 			err,
 			http.StatusInternalServerError,
 			"permission assignment error, please try again later",
@@ -215,7 +215,7 @@ func (a *Acl) RevokeUserSourceACL(
 	tag, err := a.Pool.Exec(ctx, sql, args...)
 	if err != nil {
 		err = fmt.Errorf("adapter - acl - RevokeUserSourceACL - a.Pool.Exec(): %w", err)
-		return custom_error.NewCustomError(
+		return custom_error.New(
 			err,
 			http.StatusInternalServerError,
 			"permission assignment error, please try again later",

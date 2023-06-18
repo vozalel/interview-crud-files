@@ -24,7 +24,7 @@ var (
 )
 
 var (
-	testData = "testData"
+	testData = []byte("testData")
 )
 
 func datasourceCrudUC(t *testing.T) (
@@ -78,7 +78,7 @@ func TestCreate(t *testing.T) {
 				},
 				&entity.Datasource{
 					Name: "test permission deny",
-					Data: &testData,
+					Data: testData,
 				},
 			)
 

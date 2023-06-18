@@ -19,7 +19,7 @@ func (e *CustomError) Error() string {
 	return fmt.Errorf("%w: %s", e.Err, e.Message).Error()
 }
 
-func NewCustomError(err error, typeCode int, message string) *CustomError {
+func New(err error, typeCode int, message string) *CustomError {
 	return &CustomError{
 		Err:     err,
 		Code:    typeCode,

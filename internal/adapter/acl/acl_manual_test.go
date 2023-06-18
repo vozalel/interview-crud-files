@@ -32,7 +32,6 @@ func TestGrantUserSourceACL(t *testing.T) {
 	manager := getManagerACL()
 
 	userID := 1
-	datasourceData := "xml"
 
 	user := entity.User{
 		Name: "admin",
@@ -41,7 +40,7 @@ func TestGrantUserSourceACL(t *testing.T) {
 
 	datasource := entity.Datasource{
 		Name: "test source",
-		Data: &datasourceData,
+		Data: []byte("xml"),
 	}
 
 	acl := entity.DatasourceACL{
@@ -63,7 +62,6 @@ func TestGetUserSourceACL(t *testing.T) {
 	manager := getManagerACL()
 
 	userID := 1
-	datasourceData := "xml"
 
 	user := entity.User{
 		Name: "admin",
@@ -72,7 +70,7 @@ func TestGetUserSourceACL(t *testing.T) {
 
 	datasource := entity.Datasource{
 		Name: "test source",
-		Data: &datasourceData,
+		Data: []byte("xml"),
 	}
 
 	acl, errCustom := manager.GetUserSourceACL(context.Background(), &user, &datasource)
@@ -86,7 +84,6 @@ func TestRevokeUserSourceACL(t *testing.T) {
 	manager := getManagerACL()
 
 	userID := 1
-	datasourceData := "xml"
 
 	user := entity.User{
 		Name: "admin",
@@ -95,7 +92,7 @@ func TestRevokeUserSourceACL(t *testing.T) {
 
 	datasource := entity.Datasource{
 		Name: "test source",
-		Data: &datasourceData,
+		Data: []byte("xml"),
 	}
 
 	errCustom := manager.RevokeUserSourceACL(context.Background(), &user, &datasource)

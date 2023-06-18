@@ -7,7 +7,7 @@ import (
 
 type Datasource struct {
 	Name string
-	Data *string
+	Data []byte
 }
 
 //go:generate mockgen -source=datasource.go -destination=./mock/datasource_mocks.go -package=mock

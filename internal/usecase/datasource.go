@@ -23,7 +23,7 @@ type Usecase struct {
 }
 
 var (
-	ErrorPermissionDenied = custom_error.NewCustomError(
+	ErrorPermissionDenied = custom_error.New(
 		errors.New("permission denied"),
 		http.StatusForbidden,
 		"permission denied",

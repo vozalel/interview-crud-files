@@ -44,3 +44,7 @@ func SetLogLevel(level string) {
 
 	l.SetLevel(lvl)
 }
+
+func GetLogLevel() string {
+	return l.Level.String()
+}
