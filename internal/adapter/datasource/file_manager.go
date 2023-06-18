@@ -104,6 +104,9 @@ func (f *FileManager) UpdateDataSource(
 func (f *FileManager) DeleteDataSource(ctx context.Context, datasource *entity.Datasource) *custom_error.CustomError {
 	err := os.Remove(path.Join(f.Path, datasource.Name))
 	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
 		return custom_error.New(
 			fmt.Errorf("adapter - FileManager - DeleteDataSource - os.Remove(): %w", err),
 			http.StatusInternalServerError,
