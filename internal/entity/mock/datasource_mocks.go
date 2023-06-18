@@ -64,6 +64,21 @@ func (mr *MockIManagerDatasourceMockRecorder) DeleteDataSource(ctx, datasource i
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteDataSource", reflect.TypeOf((*MockIManagerDatasource)(nil).DeleteDataSource), ctx, datasource)
 }
 
+// ExistDataSource mocks base method.
+func (m *MockIManagerDatasource) ExistDataSource(datasource *entity.Datasource) (bool, *custom_error.CustomError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ExistDataSource", datasource)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(*custom_error.CustomError)
+	return ret0, ret1
+}
+
+// ExistDataSource indicates an expected call of ExistDataSource.
+func (mr *MockIManagerDatasourceMockRecorder) ExistDataSource(datasource interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExistDataSource", reflect.TypeOf((*MockIManagerDatasource)(nil).ExistDataSource), datasource)
+}
+
 // ListDataSources mocks base method.
 func (m *MockIManagerDatasource) ListDataSources(ctx context.Context) ([]string, *custom_error.CustomError) {
 	m.ctrl.T.Helper()
