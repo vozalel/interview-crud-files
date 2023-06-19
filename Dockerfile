@@ -7,7 +7,7 @@ ARG SVC_NAME
 RUN apk --no-cache add ca-certificates make
 
 WORKDIR /build
-COPY docker .
+COPY . .
 RUN make build \
     && mv build/app /exe
 
@@ -16,4 +16,4 @@ COPY --from=builder /exe /
 COPY --from=builder /build/config config/
 COPY --from=builder /build/docs /docs
 
-ENTRYPOINT ["/exe"]
+ENTRYPOINT ["exe"]
